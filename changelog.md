@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.15 (10/02/2023)
+
+- fix pagination
+
 ## 2.4.14 (10/02/2023)
 
 + add github actions

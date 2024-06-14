@@ -38,8 +38,9 @@ class NewsLinkProvider implements LinkProviderInterface
 
     public function preload(array $hrefs, $locale, $published = true): array
     {
+        $result = [];
         if (0 === count($hrefs)) {
-            return [];
+            return $result;
         }
 
         $items = $this->newsRepository->findBy([

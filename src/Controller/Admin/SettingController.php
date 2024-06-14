@@ -54,6 +54,9 @@ class SettingController extends AbstractRestController implements ClassResourceI
         return $this->handleView($this->view($applicationSetting));
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     public function mapDataToEntity(array $data, Setting $entity): void
     {
         $defaultImageId = $data['defaultImage']['id'] ?? null;

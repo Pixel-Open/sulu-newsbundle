@@ -14,5 +14,7 @@ services:
   Pixel\NewsBundle\Twig\NewsExtension:
     public: false
     autowire: true
+    arguments:
+      $newsRepository: "@news.news_repository"
     tags:
       - {name: twig.extension}

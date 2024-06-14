@@ -39,7 +39,7 @@ class News
      * @ORM\JoinColumn(nullable=false)
      * @Serializer\Expose()
      */
-    private Category $category;
+    private CategoryInterface $category;
 
     /**
      * @ORM\ManyToOne(targetEntity=MediaInterface::class)
@@ -156,6 +156,7 @@ class News
 
     /**
      * @Serializer\VirtualProperty(name="seo")
+     * @return array<mixed>|null
      */
     public function getSeo(): ?array
     {
@@ -168,6 +169,7 @@ class News
 
     /**
      * @Serializer\VirtualProperty(name="ext")
+     * @return array<mixed>|null
      */
     public function getExt(): ?array
     {
@@ -185,6 +187,10 @@ class News
         ];
     }
 
+    /**
+     * @param array<mixed>|null $seo
+     * @return $this
+     */
     public function setSeo(?array $seo): self
     {
         $translation = $this->getTranslation($this->locale);
@@ -197,6 +203,7 @@ class News
 
     /**
      * @Serializer\VirtualProperty(name="content")
+     * @return array<mixed>|null
      */
     public function getContent(): ?array
     {
@@ -207,14 +214,11 @@ class News
         return $translation->getContent();
     }
 
-    public function getCategory(): Category
+    public function getCategory(): CategoryInterface
     {
         return $this->category;
     }
 
-    /**
-     * @param Category $category
-     */
     public function setCategory(CategoryInterface $category): void
     {
         $this->category = $category;
@@ -230,6 +234,10 @@ class News
         $this->cover = $cover;
     }
 
+    /**
+     * @param array<mixed> $content
+     * @return $this
+     */
     public function setContent(array $content): self
     {
         $translation = $this->getTranslation($this->locale);
@@ -264,6 +272,7 @@ class News
 
     /**
      * @Serializer\VirtualProperty(name="excerpt")
+     * @return array<mixed>|null
      */
     public function getExcerpt(): ?array
     {
@@ -274,6 +283,10 @@ class News
         return $translation->getExcerpt();
     }
 
+    /**
+     * @param array<mixed>|null $excerpt
+     * @return $this
+     */
     public function setExcerpt(?array $excerpt): self
     {
         $translation = $this->getTranslation($this->locale);
@@ -284,6 +297,9 @@ class News
         return $this;
     }
 
+    /**
+     * @return array<string, NewsTranslation>
+     */
     public function getTranslations(): array
     {
         return $this->translations->toArray();

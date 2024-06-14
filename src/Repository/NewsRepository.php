@@ -44,6 +44,9 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
         return $news;
     }
 
+    /**
+     * @return array<News>
+     */
     public function findAllForSitemap(int $page, int $limit): array
     {
         $query = $this->createQueryBuilder('n')
@@ -52,17 +55,26 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
         return $query->getQuery()->getResult();
     }
 
-    public function countForSitemap()
+    public function countForSitemap(): int
     {
         $query = $this->createQueryBuilder('n')
             ->select('count(n)');
         return $query->getQuery()->getSingleScalarResult();
     }
 
-    public function appendJoins(QueryBuilder $queryBuilder, $alias, $locale)
+    /**
+     * @param string $alias
+     * @param string $locale
+     */
+    public function appendJoins(QueryBuilder $queryBuilder, $alias, $locale): void
     {
     }
 
+    /**
+     * @param array<mixed> $filters
+     * @param array<mixed> $options
+     * @return array<mixed>|object[]
+     */
     public function findByFilters($filters, $page, $pageSize, $limit, $locale, $options = []): array
     {
         $entities = $this->getPublishedNews($filters, $locale, $page, $pageSize, $limit, $options);
@@ -75,6 +87,12 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
         );
     }
 
+    /**
+     * @param array<mixed> $filters
+     * @param array<mixed> $options
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function hasNextPage(array $filters, ?int $page, ?int $pageSize, ?int $limit, string $locale, array $options = []): bool
     {
         $pageCurrent = (key_exists('page', $options)) ? (int) $options['page'] : 0;
@@ -93,7 +111,12 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
         }
     }
 
-    public function getPublishedNews(array $filters, string $locale, ?int $page, $pageSize, ?int $limit, array $options): array
+    /**
+     * @param array<mixed> $filters
+     * @param array<mixed> $options
+     * @return array<mixed>
+     */
+    public function getPublishedNews(array $filters, string $locale, ?int $page, ?int $pageSize, ?int $limit, array $options): array
     {
         $pageCurrent = (key_exists('page', $options)) ? (int) $options['page'] : 0;
 

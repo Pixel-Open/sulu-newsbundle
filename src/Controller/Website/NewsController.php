@@ -11,24 +11,31 @@ use Sulu\Bundle\WebsiteBundle\Resolver\TemplateAttributeResolverInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 
 class NewsController extends AbstractController
 {
-    /**
-     * @return string[]
-     */
-    public static function getSubscribedServices()
+    private TemplateAttributeResolverInterface $templateAttributeResolver;
+
+    private RouteRepositoryInterface $routeRepository;
+
+    private WebspaceManagerInterface $webspaceManager;
+
+    private Environment $twig;
+
+    public function __construct(TemplateAttributeResolverInterface $templateAttributeResolver, RouteRepositoryInterface $routeRepository, WebspaceManagerInterface $webspaceManager, Environment $twig)
     {
-        $subscribedServices = parent::getSubscribedServices();
-
-        $subscribedServices['sulu_core.webspace.webspace_manager'] = WebspaceManagerInterface::class;
-        $subscribedServices['sulu.repository.route'] = RouteRepositoryInterface::class;
-        $subscribedServices['sulu_website.resolver.template_attribute'] = TemplateAttributeResolverInterface::class;
-
-        return $subscribedServices;
+        $this->templateAttributeResolver = $templateAttributeResolver;
+        $this->routeRepository = $routeRepository;
+        $this->webspaceManager = $webspaceManager;
+        $this->twig = $twig;
     }
 
-    public function indexAction(News $news, $attributes = [], $preview = false, $partial = false): Response
+    /**
+     * @param array<mixed> $attributes
+     * @throws \Exception
+     */
+    public function indexAction(News $news, array $attributes = [], bool $preview = false, bool $partial = false): Response
     {
         if (!$news->getSeo() || (isset($news->getSeo()['title']) && !$news->getSeo()['title'])) {
             $seo = [
@@ -37,19 +44,19 @@ class NewsController extends AbstractController
 
             $news->setSeo($seo);
         }
-        $parameters = $this->get('sulu_website.resolver.template_attribute')->resolve([
+        $parameters = $this->templateAttributeResolver->resolve([
             'news' => $news,
             'localizations' => $this->getLocalizationsArrayForEntity($news),
         ]);
 
         if ($partial) {
-            $content = $this->renderBlock(
+            return $this->renderBlock(
                 '@News/news.html.twig',
                 'content',
                 $parameters
             );
         } elseif ($preview) {
-            $content = $this->renderPreview(
+            $content =  $this->renderPreview(
                 '@News/news.html.twig',
                 $parameters
             );
@@ -61,21 +68,22 @@ class NewsController extends AbstractController
                 '@News/news.html.twig',
                 $parameters
             );
+
         }
 
-        return new Response($content);
+        return new Response((string) $content);
     }
 
     /**
-     * @return array<string, array>
+     * @return array<string, array<mixed>>
      */
     protected function getLocalizationsArrayForEntity(News $entity): array
     {
-        $routes = $this->get('sulu.repository.route')->findAllByEntity(News::class, (string) $entity->getId());
+        $routes = $this->routeRepository->findAllByEntity(News::class, (string) $entity->getId());
 
         $localizations = [];
         foreach ($routes as $route) {
-            $url = $this->get('sulu_core.webspace.webspace_manager')->findUrlByResourceLocator(
+            $url = $this->webspaceManager->findUrlByResourceLocator(
                 $route->getPath(),
                 null,
                 $route->getLocale()
@@ -91,36 +99,8 @@ class NewsController extends AbstractController
     }
 
     /**
-     * Returns rendered part of template specified by block.
-     *
-     * @param mixed $template
-     * @param mixed $block
-     * @param mixed $attributes
+     * @param array<mixed> $parameters
      */
-    protected function renderBlock($template, $block, $attributes = [])
-    {
-        $twig = $this->get('twig');
-        $attributes = $twig->mergeGlobals($attributes);
-
-        $template = $twig->load($template);
-
-        $level = ob_get_level();
-        ob_start();
-
-        try {
-            $rendered = $template->renderBlock($block, $attributes);
-            ob_end_clean();
-
-            return $rendered;
-        } catch (\Exception $e) {
-            while (ob_get_level() > $level) {
-                ob_end_clean();
-            }
-
-            throw $e;
-        }
-    }
-
     protected function renderPreview(string $view, array $parameters = []): string
     {
         $parameters['previewParentTemplate'] = $view;

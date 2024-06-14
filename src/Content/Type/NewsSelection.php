@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pixel\NewsBundle\Content\Type;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Pixel\newsBundle\Entity\News;
+use Pixel\NewsBundle\Entity\News;
 use Sulu\Component\Content\Compat\PropertyInterface;
 use Sulu\Component\Content\SimpleContentType;
 

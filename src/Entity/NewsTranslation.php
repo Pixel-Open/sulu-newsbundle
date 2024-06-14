@@ -63,18 +63,21 @@ class NewsTranslation implements AuditableInterface
     /**
      * @ORM\Column(type="json", nullable=true)
      * @Serializer\Expose()
+     * @var array<mixed>|null
      */
     private ?array $seo = null;
 
     /**
      * @ORM\Column(type="json")
      * @Serializer\Expose()
+     * @var array<mixed>
      */
     private array $content;
 
     /**
      * @ORM\Column(type="json", nullable=true)
      * @Serializer\Expose()
+     * @var array<mixed>|null
      */
     private ?array $excerpt = null;
 
@@ -125,9 +128,6 @@ class NewsTranslation implements AuditableInterface
         return $this->routePath ?? '';
     }
 
-    /**
-     * @return self
-     */
     public function setRoutePath(string $routePath): void
     {
         $this->routePath = $routePath;
@@ -161,34 +161,49 @@ class NewsTranslation implements AuditableInterface
         $this->publishedAt = $publishedAt;
     }
 
+    /**
+     * @return mixed[]|null
+     */
     public function getSeo(): ?array
     {
         return $this->seo;
     }
 
+    /**
+     * @param array<mixed>|null $seo
+     */
     public function setSeo(?array $seo): void
     {
         $this->seo = $seo;
     }
 
     /**
-     * @return array
+     * @return array<mixed>|null
      */
     public function getContent(): ?array
     {
         return $this->content ?? [];
     }
 
+    /**
+     * @param array<mixed> $content
+     */
     public function setContent(array $content): void
     {
         $this->content = $content;
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function getExcerpt(): ?array
     {
         return $this->excerpt;
     }
 
+    /**
+     * @param array<mixed>|null $excerpt
+     */
     public function setExcerpt(?array $excerpt): void
     {
         $this->excerpt = $excerpt;

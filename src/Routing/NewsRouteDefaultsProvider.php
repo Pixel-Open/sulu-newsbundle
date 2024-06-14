@@ -23,7 +23,7 @@ class NewsRouteDefaultsProvider implements RouteDefaultsProviderInterface
     {
         return [
             '_controller' => NewsController::class . '::indexAction',
-            'news' => $object ?: $this->newsRepository->findById($id, $locale),
+            'news' => $object ?: $this->newsRepository->findById((int) $id, $locale),
         ];
     }
 

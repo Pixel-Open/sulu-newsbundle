@@ -11,8 +11,14 @@ class NewsModifiedEvent extends DomainEvent
 {
     private News $news;
 
+    /**
+     * @var array<mixed>
+     */
     private array $payload;
 
+    /**
+     * @param array<mixed> $payload
+     */
     public function __construct(News $news, array $payload)
     {
         parent::__construct();

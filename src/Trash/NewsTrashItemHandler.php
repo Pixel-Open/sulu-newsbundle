@@ -102,14 +102,14 @@ class NewsTrashItemHandler implements StoreTrashItemHandlerInterface, RestoreTra
         return $actu;
     }
 
-    private function createRoute(EntityManagerInterface $manager, int $id, string $slug, string $class)
+    private function createRoute(EntityManagerInterface $manager, int $id, string $slug, string $class): void
     {
         $route = new Route();
         $route->setPath($slug);
         $route->setLocale('fr');
         $route->setEntityClass($class);
-        $route->setEntityId($id);
-        $route->setHistory(0);
+        $route->setEntityId((string) $id);
+        $route->setHistory(false);
         $route->setCreated(new \DateTime());
         $route->setChanged(new \DateTime());
         $manager->persist($route);

@@ -16,6 +16,9 @@ class NewsSitemapProvider implements SitemapProviderInterface
 
     private WebspaceManagerInterface $webspaceManager;
 
+    /**
+     * @var array<string>
+     */
     private array $locales = [];
 
     public function __construct(NewsRepository $newsRepository, WebspaceManagerInterface $webspaceManager)
@@ -41,7 +44,7 @@ class NewsSitemapProvider implements SitemapProviderInterface
         return $result;
     }
 
-    private function getLocaleByHost($host)
+    private function getLocaleByHost(string $host): ?string
     {
         if (!\array_key_exists($host, $this->locales)) {
             $portalInformation = $this->webspaceManager->getPortalInformations();
@@ -54,6 +57,7 @@ class NewsSitemapProvider implements SitemapProviderInterface
         if (isset($this->locales[$host])) {
             return $this->locales[$host];
         }
+        return null;
     }
 
     public function createSitemap($scheme, $host): Sitemap
@@ -68,6 +72,6 @@ class NewsSitemapProvider implements SitemapProviderInterface
 
     public function getMaxPage($scheme, $host)
     {
-        return ceil($this->newsRepository->countForSitemap() / self::PAGE_SIZE);
+        return (int) ceil($this->newsRepository->countForSitemap() / self::PAGE_SIZE);
     }
 }

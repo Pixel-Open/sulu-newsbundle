@@ -82,7 +82,7 @@
             <argument type="service" id="news.news_repository"/>
             <argument type="service" id="sulu_core.array_serializer"/>
             <argument type="service" id="request_stack"/>
-            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="news.news_repository" />
             <tag name="sulu.smart_content.data_provider" alias="news"/>
         </service>
 

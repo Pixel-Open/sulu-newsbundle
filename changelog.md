@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.0 (14/06/2024)
+
++ Compatible with Sulu 2.6 and Symfony 6.4
+
 ## 2.4.15 (10/02/2023)
 
 - fix pagination

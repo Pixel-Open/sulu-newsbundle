@@ -33,15 +33,20 @@ class NewsObjectProvider implements PreviewObjectProviderInterface
         return $this->newsRepository->find((int) $id);
     }
 
-    public function getId($object): int
+    /**
+     * @param News $object
+     */
+    public function getId($object): string
     {
-        return $object->getId();
+        return (string) $object->getId();
     }
 
     /**
      * @param News $object
+     * @param string $locale
+     * @param array<mixed> $data
      */
-    public function setValues($object, $locale, array $data)
+    public function setValues($object, $locale, array $data): void
     {
         $coverId = $data['cover']['id'] ?? null;
         $categoryId = (isset($data['category']['id'])) ? $data['category']['id'] : $data['category'];
@@ -57,6 +62,12 @@ class NewsObjectProvider implements PreviewObjectProviderInterface
         $object->setSeo($seo);
     }
 
+    /**
+     * @param object $object
+     * @param string $locale
+     * @param array<mixed> $context
+     * @return mixed
+     */
     public function setContext($object, $locale, array $context)
     {
         if (\array_key_exists('template', $context)) {
@@ -79,6 +90,9 @@ class NewsObjectProvider implements PreviewObjectProviderInterface
         return serialize($object);
     }
 
+    /**
+     * @return mixed
+     */
     public function deserialize($serializedObject, $objectClass)
     {
         return unserialize($serializedObject);
@@ -86,5 +100,6 @@ class NewsObjectProvider implements PreviewObjectProviderInterface
 
     public function getSecurityContext($id, $locale): ?string
     {
+        return News::SECURITY_CONTEXT;
     }
 }

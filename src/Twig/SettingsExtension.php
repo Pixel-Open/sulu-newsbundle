@@ -3,13 +3,13 @@
 namespace Pixel\NewsBundle\Twig;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Pixel\GalleryBundle\Entity\Setting;
+use Pixel\NewsBundle\Entity\Setting;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class SettingsExtension extends AbstractExtension
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -23,7 +23,7 @@ class SettingsExtension extends AbstractExtension
         ];
     }
 
-    public function newsSettings()
+    public function newsSettings(): Setting
     {
         return $this->entityManager->getRepository(Setting::class)->findOneBy([]);
     }

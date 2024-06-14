@@ -122,7 +122,7 @@ class NewsController extends AbstractRestController implements ClassResourceInte
         return $this->handleView($this->view($item));
     }
 
-    protected function load(int $id, Request $request, $defaultLocal = null): ?News
+    protected function load(int $id, Request $request, string $defaultLocal = null): ?News
     {
         return $this->repository->findById($id, ($defaultLocal) ? $defaultLocal : (string) $this->getLocale($request));
     }

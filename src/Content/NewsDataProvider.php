@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Pixel\NewsBundle\Content;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Pixel\NewsBundle\Entity\News;
+use Pixel\NewsBundle\Repository\NewsRepository;
+use Sulu\Component\Content\Compat\PropertyParameter;
 use Sulu\Component\Serializer\ArraySerializerInterface;
 use Sulu\Component\SmartContent\DataProviderResult;
 use Sulu\Component\SmartContent\ItemInterface;
@@ -17,12 +17,12 @@ class NewsDataProvider extends BaseDataProvider
 {
     private RequestStack $requestStack;
 
-    private EntityManagerInterface $entityManager;
+    private NewsRepository $newsRepository;
 
-    public function __construct(DataProviderRepositoryInterface $repository, ArraySerializerInterface $serializer, RequestStack $requestStack, EntityManagerInterface $entityManager)
+    public function __construct(DataProviderRepositoryInterface $repository, ArraySerializerInterface $serializer, RequestStack $requestStack, NewsRepository $newsRepository)
     {
         parent::__construct($repository, $serializer);
-        $this->entityManager = $entityManager;
+        $this->newsRepository = $newsRepository;
         $this->requestStack = $requestStack;
     }
 
@@ -50,6 +50,15 @@ class NewsDataProvider extends BaseDataProvider
         return $this->configuration;
     }
 
+    /**
+     * @param array<mixed> $filters
+     * @param array<mixed> $propertyParameter
+     * @param array<mixed> $options
+     * @param int $limit
+     * @param int $page
+     * @param int $pageSize
+     * @return DataProviderResult
+     */
     public function resolveResourceItems(
         array $filters,
         array $propertyParameter,
@@ -61,12 +70,13 @@ class NewsDataProvider extends BaseDataProvider
         $locale = $options['locale'];
         $request = $this->requestStack->getCurrentRequest();
         $options['page'] = $request->get('p');
-        $news = $this->entityManager->getRepository(News::class)->findByFilters($filters, $page, $pageSize, $limit, $locale, $options);
-        return new DataProviderResult($news, $this->entityManager->getRepository(News::class)->hasNextPage($filters, $page, $pageSize, $limit, $locale, $options));
+        $news = $this->newsRepository->findByFilters($filters, $page, $pageSize, $limit, $locale, $options);
+        return new DataProviderResult($news, $this->newsRepository->hasNextPage($filters, $page, $pageSize, $limit, $locale, $options));
     }
 
     /**
      * Decorates result as data item.
+     * @param array<mixed> $data
      *
      * @return ItemInterface[]
      */
@@ -84,8 +94,9 @@ class NewsDataProvider extends BaseDataProvider
      * Returns additional options for query creation.
      *
      * @param PropertyParameter[] $propertyParameter
+     * @param array<mixed> $options
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getOptions(array $propertyParameter, array $options = [])
     {

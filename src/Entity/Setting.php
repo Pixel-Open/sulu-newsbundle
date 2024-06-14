@@ -43,9 +43,6 @@ class Setting implements AuditableInterface
         return $this->id;
     }
 
-    /**
-     * @return array|null
-     */
     public function getDefaultImage(): ?MediaInterface
     {
         return $this->defaultImage;

@@ -2,26 +2,22 @@
 
 namespace Pixel\NewsBundle\Twig;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Pixel\NewsBundle\Entity\News;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Pixel\NewsBundle\Repository\NewsRepository;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class NewsExtension extends AbstractExtension
 {
-    private EntityManagerInterface $entityManager;
+    private NewsRepository $newsRepository;
 
     private Environment $environment;
 
-    private RequestStack $request;
-
-    public function __construct(EntityManagerInterface $entityManager, Environment $environment, RequestStack $request)
+    public function __construct(NewsRepository $newsRepository, Environment $environment)
     {
-        $this->entityManager = $entityManager;
+        $this->newsRepository = $newsRepository;
         $this->environment = $environment;
-        $this->request = $request;
     }
 
     public function getFunctions()
@@ -34,17 +30,20 @@ class NewsExtension extends AbstractExtension
         ];
     }
 
-    public function getLatestNewsHtml(int $limit = 3, $locale = 'fr')
+    public function getLatestNewsHtml(int $limit = 3, string $locale = 'fr'): string
     {
-        $news = $this->entityManager->getRepository(News::class)->findByFilters([], 0, $limit, $limit, $locale);
+        $news = $this->newsRepository->findByFilters([], 0, $limit, $limit, $locale);
         ;
         return $this->environment->render("@News/twig/news.html.twig", [
             "news" => $news,
         ]);
     }
 
-    public function getLatestNews(int $limit = 3, $locale = 'fr')
+    /**
+     * @return array<News>
+     */
+    public function getLatestNews(int $limit = 3, string $locale = 'fr'): array
     {
-        return $this->entityManager->getRepository(News::class)->findByFilters([], 0, $limit, $limit, $locale);
+        return $this->newsRepository->findByFilters([], 0, $limit, $limit, $locale);
     }
 }

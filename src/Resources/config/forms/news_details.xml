@@ -60,6 +60,7 @@
                 <xi:include href="sulu-block-bundle://blocks/three_columns.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/highlight.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/video_text.xml"/>
+                <xi:include href="sulu-block-bundle://blocks/code_html.xml"/>
             </types>
         </block>
     </properties>

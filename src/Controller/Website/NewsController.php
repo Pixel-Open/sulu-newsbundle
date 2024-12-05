@@ -56,7 +56,7 @@ class NewsController extends AbstractController
                 $parameters
             );
         } elseif ($preview) {
-            $content =  $this->renderPreview(
+            $content = $this->renderPreview(
                 '@News/news.html.twig',
                 $parameters
             );
@@ -68,7 +68,6 @@ class NewsController extends AbstractController
                 '@News/news.html.twig',
                 $parameters
             );
-
         }
 
         return new Response((string) $content);

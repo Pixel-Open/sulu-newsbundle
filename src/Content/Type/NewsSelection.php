@@ -6,10 +6,12 @@ namespace Pixel\NewsBundle\Content\Type;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Pixel\NewsBundle\Entity\News;
+use Sulu\Bundle\ReferenceBundle\Application\Collector\ReferenceCollectorInterface;
+use Sulu\Bundle\ReferenceBundle\Infrastructure\Sulu\ContentType\ReferenceContentTypeInterface;
 use Sulu\Component\Content\Compat\PropertyInterface;
 use Sulu\Component\Content\SimpleContentType;
 
-class NewsSelection extends SimpleContentType
+class NewsSelection extends SimpleContentType implements ReferenceContentTypeInterface
 {
     protected EntityManagerInterface $entityManager;
 
@@ -51,5 +53,21 @@ class NewsSelection extends SimpleContentType
         return [
             'ids' => $property->getValue(),
         ];
+    }
+
+    public function getReferences(PropertyInterface $property, ReferenceCollectorInterface $referenceCollector, string $propertyPrefix = ''): void
+    {
+        $data = $property->getValue();
+        if (!isset($data) || !is_array($data)) {
+            return;
+        }
+
+        foreach ($data as $id) {
+            $referenceCollector->addReference(
+                News::RESOURCE_KEY,
+                (string) $id,
+                $propertyPrefix . $property->getName()
+            );
+        }
     }
 }

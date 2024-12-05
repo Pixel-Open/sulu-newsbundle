@@ -14,6 +14,7 @@ use Sulu\Bundle\AdminBundle\Admin\View\ToolbarAction;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Admin\View\ViewCollection;
 use Sulu\Bundle\AutomationBundle\Admin\View\AutomationViewBuilderFactoryInterface;
+use Sulu\Bundle\ReferenceBundle\Infrastructure\Sulu\Admin\View\ReferenceViewBuilderFactoryInterface;
 use Sulu\Component\Security\Authorization\PermissionTypes;
 use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
@@ -44,18 +45,22 @@ class NewsAdmin extends Admin
 
     private AutomationViewBuilderFactoryInterface $automationViewBuilderFactory;
 
+    private ReferenceViewBuilderFactoryInterface $referenceViewBuilderFactory;
+
     public function __construct(
         ViewBuilderFactoryInterface $viewBuilderFactory,
         SecurityCheckerInterface $securityChecker,
         WebspaceManagerInterface $webspaceManager,
         ActivityViewBuilderFactoryInterface $activityViewBuilderFactory,
-        AutomationViewBuilderFactoryInterface $automationViewBuilderFactory
+        AutomationViewBuilderFactoryInterface $automationViewBuilderFactory,
+        ReferenceViewBuilderFactoryInterface $referenceViewBuilderFactory
     ) {
         $this->viewBuilderFactory = $viewBuilderFactory;
         $this->securityChecker = $securityChecker;
         $this->webspaceManager = $webspaceManager;
         $this->activityViewBuilderFactory = $activityViewBuilderFactory;
         $this->automationViewBuilderFactory = $automationViewBuilderFactory;
+        $this->referenceViewBuilderFactory = $referenceViewBuilderFactory;
     }
 
     public function configureNavigationItems(NavigationItemCollection $navigationItemCollection): void
@@ -182,6 +187,13 @@ class NewsAdmin extends Admin
                     ->setDefaultLocale($locales[0])
                     ->setParent(self::EDIT_FORM_VIEW)
             );
+
+            if ($this->referenceViewBuilderFactory->hasReferenceListPermission()) {
+                $viewCollection->add(
+                    $this->referenceViewBuilderFactory->createReferenceListViewBuilder(static::EDIT_FORM_VIEW . ".insights.references", "/references", News::RESOURCE_KEY)
+                        ->setParent(static::EDIT_FORM_VIEW)
+                );
+            }
         }
     }
 

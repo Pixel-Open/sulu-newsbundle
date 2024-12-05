@@ -1,15 +1,16 @@
 # Sulu news bundle
 
-![GitHub release (with filter)](https://img.shields.io/github/v/release/Pixel-Open/sulu-newsbundle?style=for-the-badge)
-[![Dependency](https://img.shields.io/badge/sulu-2.5-cca000.svg?style=for-the-badge)](https://sulu.io/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.0-green)](https://php.net/)
+[![Minimum Sulu Version](https://img.shields.io/badge/sulu-%3E%3D%202.6-green)](https://symfony.com)
+[![GitHub release](https://img.shields.io/github/v/release/Pixel-Open/sulu-newsbundle)](https://github.com/Pixel-Open/cloudflare-turnstile-bundle/releases)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Pixel-Open_sulu-blockbundle&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Pixel-Open_sulu-blockbundle)
+
 
 ## Presentation
 A Sulu bundle to manage the news of your website.
 
 ## Requirements
 
-* PHP >= 8.0
-* Sulu >= 2.4.*
 * Symfony >= 5.4
 * Composer
 
@@ -33,7 +34,7 @@ Execute the following [composer](https://getcomposer.org/) command to add the bu
 project:
 
 ```bash
-composer require pixelopen/sulu-newsbundle --with-all-dependencies
+composer require pixelopen/sulu-newsbundle
 ```
 
 ### Enable the bundle

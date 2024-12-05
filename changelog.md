@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.6.1 (05/12/2024)
+
++ Require Sulu 2.6 on composer
++ Add html block
++ Update readme
+
 ## 2.6.0 (14/06/2024)
 
 + Compatible with Sulu 2.6 and Symfony 6.4

@@ -16,55 +16,39 @@ use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 
 class SettingAdmin extends Admin
 {
-    public const TAB_VIEW = "news.settings";
-
-    public const FORM_VIEW = "news.settings.form";
-
-    private ViewBuilderFactoryInterface $viewBuilderFactory;
-
-    private SecurityCheckerInterface $securityChecker;
+    public const TAB_VIEW = 'news.settings';
+    public const FORM_VIEW = 'news.settings.form';
 
     public function __construct(
-        ViewBuilderFactoryInterface $viewBuilderFactory,
-        SecurityCheckerInterface $securityChecker
+        private readonly ViewBuilderFactoryInterface $viewBuilderFactory,
+        private readonly SecurityCheckerInterface $securityChecker
     ) {
-        $this->viewBuilderFactory = $viewBuilderFactory;
-        $this->securityChecker = $securityChecker;
     }
 
     public function configureNavigationItems(NavigationItemCollection $navigationItemCollection): void
     {
-        if ($this->securityChecker->hasPermission(Setting::SECURITY_CONTEXT, PermissionTypes::EDIT)) {
-            $navigationItem = new NavigationItem('news.settings');
-            $navigationItem->setPosition(4);
-            $navigationItem->setView(static::TAB_VIEW);
-            $navigationItemCollection->get(Admin::SETTINGS_NAVIGATION_ITEM)->addChild($navigationItem);
+        if (!$this->hasEditPermission()) {
+            return;
         }
+
+        $navigationItem = new NavigationItem('news.settings');
+        $navigationItem->setPosition(4);
+        $navigationItem->setView(self::TAB_VIEW);
+
+        $navigationItemCollection->get(Admin::SETTINGS_NAVIGATION_ITEM)->addChild($navigationItem);
     }
 
     public function configureViews(ViewCollection $viewCollection): void
     {
-        if ($this->securityChecker->hasPermission(Setting::SECURITY_CONTEXT, PermissionTypes::EDIT)) {
-            $viewCollection->add(
-                $this->viewBuilderFactory->createResourceTabViewBuilder(static::TAB_VIEW, '/news-settings/:id')
-                    ->setResourceKey(Setting::RESOURCE_KEY)
-                    ->setAttributeDefault('id', '-')
-            );
-            $viewCollection->add(
-                $this->viewBuilderFactory->createFormViewBuilder(static::FORM_VIEW, '/details')
-                    ->setResourceKey(Setting::RESOURCE_KEY)
-                    ->setFormKey(Setting::FORM_KEY)
-                    ->setTabTitle('sulu_admin.details')
-                    ->addToolbarActions([new ToolbarAction('sulu_admin.save')])
-                    ->setParent(static::TAB_VIEW)
-            );
+        if (!$this->hasEditPermission()) {
+            return;
         }
+
+        $this->addTabView($viewCollection);
+        $this->addFormView($viewCollection);
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function getSecurityContexts()
+    public function getSecurityContexts(): array
     {
         return [
             self::SULU_ADMIN_SECURITY_SYSTEM => [
@@ -76,5 +60,36 @@ class SettingAdmin extends Admin
                 ],
             ],
         ];
+    }
+
+    private function hasEditPermission(): bool
+    {
+        return $this->securityChecker->hasPermission(
+            Setting::SECURITY_CONTEXT,
+            PermissionTypes::EDIT
+        );
+    }
+
+    private function addTabView(ViewCollection $viewCollection): void
+    {
+        $viewCollection->add(
+            $this->viewBuilderFactory
+                ->createResourceTabViewBuilder(self::TAB_VIEW, '/news-settings/:id')
+                ->setResourceKey(Setting::RESOURCE_KEY)
+                ->setAttributeDefault('id', '-')
+        );
+    }
+
+    private function addFormView(ViewCollection $viewCollection): void
+    {
+        $viewCollection->add(
+            $this->viewBuilderFactory
+                ->createFormViewBuilder(self::FORM_VIEW, '/details')
+                ->setResourceKey(Setting::RESOURCE_KEY)
+                ->setFormKey(Setting::FORM_KEY)
+                ->setTabTitle('sulu_admin.details')
+                ->addToolbarActions([new ToolbarAction('sulu_admin.save')])
+                ->setParent(self::TAB_VIEW)
+        );
     }
 }

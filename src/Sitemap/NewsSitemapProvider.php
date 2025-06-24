@@ -31,7 +31,7 @@ class NewsSitemapProvider implements SitemapProviderInterface
     {
         $locale = $this->getLocaleByHost($host);
         $result = [];
-        foreach ($this->newsRepository->findAllForSitemap((int) $page, (int) self::PAGE_SIZE) as $news) {
+        foreach ($this->newsRepository->findAllForSitemap((int) $page, self::PAGE_SIZE) as $news) {
             //$news->setLocale($locale);
             $result[] = new SitemapUrl(
                 $scheme . '://' . $host . $news->getRoutePath(),

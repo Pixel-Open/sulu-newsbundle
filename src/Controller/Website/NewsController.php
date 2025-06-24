@@ -70,7 +70,7 @@ class NewsController extends AbstractController
             );
         }
 
-        return new Response((string) $content);
+        return new Response($content);
     }
 
     /**

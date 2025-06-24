@@ -52,6 +52,7 @@
                 <xi:include href="sulu-block-bundle://blocks/text.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/youtube.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/link.xml"/>
+                <xi:include href="sulu-block-bundle://blocks/image.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/images.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/image_text.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/quote.xml"/>

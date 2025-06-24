@@ -95,7 +95,7 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
      */
     public function hasNextPage(array $filters, ?int $page, ?int $pageSize, ?int $limit, string $locale, array $options = []): bool
     {
-        $pageCurrent = (key_exists('page', $options)) ? (int) $options['page'] : 0;
+        $pageCurrent = (array_key_exists('page', $options)) ? (int) $options['page'] : 0;
         $totalArticles = $this->createQueryBuilder('n')
             ->select('count(n.id)')
             ->leftJoin('n.translations', 'translation')
@@ -104,7 +104,7 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
             ->getQuery()
             ->getSingleScalarResult();
 
-        if ((int) ($limit * $pageCurrent) + $limit < (int) $totalArticles) {
+        if ($limit * $pageCurrent + $limit < (int) $totalArticles) {
             return true;
         } else {
             return false;
@@ -118,7 +118,7 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
      */
     public function getPublishedNews(array $filters, string $locale, ?int $page, ?int $pageSize, ?int $limit, array $options): array
     {
-        $pageCurrent = (key_exists('page', $options)) ? (int) $options['page'] : 0;
+        $pageCurrent = (array_key_exists('page', $options)) ? (int) $options['page'] : 0;
 
         $query = $this->createQueryBuilder('n')
             ->leftJoin('n.translations', 'translation')

@@ -9,16 +9,8 @@ use Sulu\Bundle\ActivityBundle\Domain\Event\DomainEvent;
 
 class NewsRestoredEvent extends DomainEvent
 {
-    private News $news;
+    use NewsEventTrait;
 
-    /**
-     * @var array<mixed>
-     */
-    private array $payload;
-
-    /**
-     * @param array<mixed> $payload
-     */
     public function __construct(News $news, array $payload)
     {
         parent::__construct();
@@ -26,38 +18,8 @@ class NewsRestoredEvent extends DomainEvent
         $this->payload = $payload;
     }
 
-    public function getNews(): News
-    {
-        return $this->news;
-    }
-
-    public function getEventPayload(): ?array
-    {
-        return $this->payload;
-    }
-
     public function getEventType(): string
     {
         return 'restored';
-    }
-
-    public function getResourceKey(): string
-    {
-        return News::RESOURCE_KEY;
-    }
-
-    public function getResourceId(): string
-    {
-        return (string) $this->news->getId();
-    }
-
-    public function getResourceTitle(): ?string
-    {
-        return $this->news->getTitle();
-    }
-
-    public function getResourceSecurityContext(): ?string
-    {
-        return News::SECURITY_CONTEXT;
     }
 }

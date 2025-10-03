@@ -10,12 +10,9 @@ use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="news")
- * @ORM\Entity(repositoryClass="Pixel\NewsBundle\Repository\NewsRepository")
- * @Serializer\ExclusionPolicy("all")
- */
+#[ORM\Entity(repositoryClass: "Pixel\NewsBundle\Repository\NewsRepository")]
+#[ORM\Table(name: "news")]
+#[Serializer\ExclusionPolicy("all")]
 class News
 {
     public const RESOURCE_KEY = "news";
@@ -26,40 +23,31 @@ class News
 
     public const SECURITY_CONTEXT = "news.news";
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Serializer\Expose()
-     */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue()]
+    #[ORM\Column(type: "integer")]
+    #[Serializer\Expose()]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=CategoryInterface::class)
-     * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Expose()
-     */
+    #[ORM\ManyToOne(targetEntity: CategoryInterface::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Serializer\Expose()]
     private CategoryInterface $category;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=MediaInterface::class)
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Serializer\Expose()
-     */
+    #[ORM\ManyToOne(targetEntity: MediaInterface::class)]
+    #[ORM\JoinColumn(onDelete: "SET NULL")]
+    #[Serializer\Expose()]
     private ?MediaInterface $cover;
 
     /**
      * @var Collection<string, NewsTranslation>
-     * @ORM\OneToMany(targetEntity="Pixel\NewsBundle\Entity\NewsTranslation", mappedBy="news", cascade={"ALL"}, indexBy="locale")
-     * @Serializer\Exclude
      */
+    #[ORM\OneToMany(targetEntity: "Pixel\NewsBundle\Entity\NewsTranslation", mappedBy: "news", cascade: ["ALL"], indexBy: "locale")]
+    #[Serializer\Exclude]
     private $translations;
 
-    /**
-     * @var string
-     * * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $defaultLocale;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private string $defaultLocale;
 
     private string $locale = 'fr';
 
@@ -73,9 +61,7 @@ class News
         return $this->id;
     }
 
-    /**
-     * @Serializer\VirtualProperty(name="title")
-     */
+    #[Serializer\VirtualProperty(name: "title")]
     public function getTitle(): ?string
     {
         $translation = $this->getTranslation($this->locale);
@@ -110,9 +96,7 @@ class News
         return $translation;
     }
 
-    /**
-     * @Serializer\VirtualProperty(name="route")
-     */
+    #[Serializer\VirtualProperty(name: "route")]
     public function getRoutePath(): ?string
     {
         $translation = $this->getTranslation($this->locale);
@@ -132,9 +116,7 @@ class News
         return $this;
     }
 
-    /**
-     * @Serializer\VirtualProperty(name="is_published")
-     */
+    #[Serializer\VirtualProperty(name: "is_published")]
     public function isPublished(): ?bool
     {
         $translation = $this->getTranslation($this->locale);
@@ -155,9 +137,9 @@ class News
     }
 
     /**
-     * @Serializer\VirtualProperty(name="seo")
      * @return array<mixed>|null
      */
+    #[Serializer\VirtualProperty(name: "seo")]
     public function getSeo(): ?array
     {
         $translation = $this->getTranslation($this->locale);
@@ -168,9 +150,9 @@ class News
     }
 
     /**
-     * @Serializer\VirtualProperty(name="ext")
      * @return array<mixed>|null
      */
+    #[Serializer\VirtualProperty(name: "ext")]
     public function getExt(): ?array
     {
         $translation = $this->getTranslation($this->locale);
@@ -202,9 +184,9 @@ class News
     }
 
     /**
-     * @Serializer\VirtualProperty(name="content")
      * @return array<mixed>|null
      */
+    #[Serializer\VirtualProperty(name: "content")]
     public function getContent(): ?array
     {
         $translation = $this->getTranslation($this->locale);
@@ -248,9 +230,7 @@ class News
         return $this;
     }
 
-    /**
-     * @Serializer\VirtualProperty(name="published_at")
-     */
+    #[Serializer\VirtualProperty(name: "published_at")]
     public function getPublishedAt(): ?\DateTimeImmutable
     {
         $translation = $this->getTranslation($this->locale);
@@ -271,9 +251,9 @@ class News
     }
 
     /**
-     * @Serializer\VirtualProperty(name="excerpt")
      * @return array<mixed>|null
      */
+    #[Serializer\VirtualProperty(name: "excerpt")]
     public function getExcerpt(): ?array
     {
         $translation = $this->getTranslation($this->locale);

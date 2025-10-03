@@ -7,78 +7,61 @@ use JMS\Serializer\Annotation as Serializer;
 use Sulu\Component\Persistence\Model\AuditableInterface;
 use Sulu\Component\Persistence\Model\AuditableTrait;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="news_translation")
- * @ORM\Entity(repositoryClass="Pixel\NewsBundle\Repository\NewsRepository")
- * @Serializer\ExclusionPolicy("all")
- */
+#[ORM\Entity(repositoryClass: "Pixel\NewsBundle\Repository\NewsRepository")]
+#[ORM\Table(name: "news_translation")]
+#[Serializer\ExclusionPolicy("all")]
 class NewsTranslation implements AuditableInterface
 {
     use AuditableTrait;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Serializer\Expose()
-     */
+    #[ORM\Id()]
+    #[ORM\GeneratedValue()]
+    #[ORM\Column(type: "integer")]
+    #[Serializer\Expose()]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Pixel\NewsBundle\Entity\News", inversedBy="translations")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: "Pixel\NewsBundle\Entity\News", inversedBy: "translations")]
+    #[ORM\JoinColumn(nullable: false)]
     private News $news;
 
-    /**
-     * @ORM\Column(type="string", length=5)
-     */
+    #[ORM\Column(type: "string", length: 5)]
     private string $locale;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Serializer\Expose()
-     */
+    #[ORM\Column(type: "string", length: 255)]
+    #[Serializer\Expose()]
     private string $title;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Serializer\Expose()
-     */
+    #[ORM\Column(type: "string", length: 255)]
+    #[Serializer\Expose()]
     private string $routePath;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     * @Serializer\Expose()
-     */
+    #[ORM\Column(type: "boolean", nullable: true)]
+    #[Serializer\Expose()]
     private ?bool $isPublished;
 
-    /**
-     * @ORM\Column(type="date_immutable", nullable=true)
-     * @Serializer\Expose()
-     */
+    #[ORM\Column(type: "date_immutable", nullable: true)]
+    #[Serializer\Expose()]
     private ?\DateTimeImmutable $publishedAt;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
-     * @Serializer\Expose()
      * @var array<mixed>|null
      */
+    #[ORM\Column(type: "json", nullable: true)]
+    #[Serializer\Expose()]
     private ?array $seo = null;
 
     /**
-     * @ORM\Column(type="json")
-     * @Serializer\Expose()
      * @var array<mixed>
      */
+    #[ORM\Column(type: "json")]
+    #[Serializer\Expose()]
     private array $content;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
-     * @Serializer\Expose()
      * @var array<mixed>|null
      */
+    #[ORM\Column(type: "json", nullable: true)]
+    #[Serializer\Expose()]
     private ?array $excerpt = null;
 
     public function __construct(News $news, string $locale)

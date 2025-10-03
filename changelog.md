@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.7.1 (03/10/2025)
+
+- Fix seo title and description
+
 ## 2.7.0 (03/10/2025)
 
 + Convert annotation to attribute for entities

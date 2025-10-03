@@ -37,13 +37,13 @@ class NewsController extends AbstractController
      */
     public function indexAction(News $news, array $attributes = [], bool $preview = false, bool $partial = false): Response
     {
-        if (!$news->getSeo() || (isset($news->getSeo()['title']) && !$news->getSeo()['title'])) {
-            $seo = [
-                "title" => $news->getTitle(),
-            ];
+        $seo = $news->getSeo() ?: [];
 
+        if (empty($seo['title'])) {
+            $seo['title'] = $news->getTitle();
             $news->setSeo($seo);
         }
+
         $parameters = $this->templateAttributeResolver->resolve([
             'news' => $news,
             'localizations' => $this->getLocalizationsArrayForEntity($news),

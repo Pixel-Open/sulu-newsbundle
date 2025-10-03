@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.7.0 (03/10/2025)
+
++ Convert annotation to attribute for entities
++ Add file block
+
 ## 2.6.2 (24/06/2025)
 
 + Add single image block with link

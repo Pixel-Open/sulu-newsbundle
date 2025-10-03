@@ -18,7 +18,7 @@
             </meta>
             <params>
                 <param name="entity_class" value="Pixel\NewsBundle\Entity\News"/>
-                <param name="route_schema" value="/news/{implode('-', object)}"/>
+                <param name="route_schema" value="/news/{object.getTitle()}"/>
             </params>
         </property>
         <property name="publishedAt" type="date">
@@ -56,6 +56,7 @@
                 <xi:include href="sulu-block-bundle://blocks/images.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/image_text.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/quote.xml"/>
+                <xi:include href="sulu-block-bundle://blocks/file.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/image_before_after.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/two_columns.xml"/>
                 <xi:include href="sulu-block-bundle://blocks/three_columns.xml"/>

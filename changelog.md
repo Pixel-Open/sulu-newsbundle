@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.7.2 (27/04/2026)
+
++ Add reference for media fields and blocks
+
 ## 2.7.1 (03/10/2025)
 
 - Fix seo title and description

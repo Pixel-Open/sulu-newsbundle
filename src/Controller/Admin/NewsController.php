@@ -16,6 +16,7 @@ use Pixel\NewsBundle\Domain\Event\NewsCreatedEvent;
 use Pixel\NewsBundle\Domain\Event\NewsModifiedEvent;
 use Pixel\NewsBundle\Domain\Event\NewsRemovedEvent;
 use Pixel\NewsBundle\Entity\News;
+use Pixel\NewsBundle\Reference\NewsReferenceProvider;
 use Pixel\NewsBundle\Repository\NewsRepository;
 use Sulu\Bundle\ActivityBundle\Application\Collector\DomainEventCollectorInterface;
 use Sulu\Bundle\CategoryBundle\Category\CategoryManagerInterface;
@@ -65,6 +66,8 @@ class NewsController extends AbstractRestController implements ClassResourceInte
 
     private NewsRepository $repository;
 
+    private NewsReferenceProvider $newsReferenceProvider;
+
     public function __construct(
         DoctrineListRepresentationFactory $doctrineListRepresentationFactory,
         EntityManagerInterface $entityManager,
@@ -77,6 +80,7 @@ class NewsController extends AbstractRestController implements ClassResourceInte
         TrashManagerInterface $trashManager,
         DomainEventCollectorInterface $domainEventCollector,
         NewsRepository $repository,
+        NewsReferenceProvider $newsReferenceProvider,
         ?TokenStorageInterface $tokenStorage = null
     ) {
         $this->doctrineListRepresentationFactory = $doctrineListRepresentationFactory;
@@ -89,6 +93,7 @@ class NewsController extends AbstractRestController implements ClassResourceInte
         $this->trashManager = $trashManager;
         $this->domainEventCollector = $domainEventCollector;
         $this->repository = $repository;
+        $this->newsReferenceProvider = $newsReferenceProvider;
 
         parent::__construct($viewHandler, $tokenStorage);
     }
@@ -143,6 +148,7 @@ class NewsController extends AbstractRestController implements ClassResourceInte
         );
         $this->entityManager->flush();
         $this->save($item);
+        $this->newsReferenceProvider->updateReferences($item, (string) $this->getLocale($request), 'admin');
 
         return $this->handleView($this->view($item));
     }
@@ -194,6 +200,7 @@ class NewsController extends AbstractRestController implements ClassResourceInte
             new NewsCreatedEvent($item, $data)
         );
         $this->entityManager->flush();
+        $this->newsReferenceProvider->updateReferences($item, (string) $this->getLocale($request), 'admin');
         return $this->handleView($this->view($item, 201));
     }
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.8.0 (30/09/2026)
+
++ Add paginated news list website controller and template
++ Add countPublished to news repository
++ Simplify category filter and preload cover and category in news repository
++ Truncate news title in reference provider to 191 characters
++ Add pagination and empty list translations
+- Fix deprecation of Sulu 2.6.25
+
 ## 2.7.2 (27/04/2026)
 
 + Add reference for media fields and blocks

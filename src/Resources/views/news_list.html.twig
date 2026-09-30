@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="max-w-7xl mx-auto px-4 py-16">
+
+        {% if news is empty %}
+            <p class="text-center text-gray-500">{{ "news.no_results"|trans }}</p>
+        {% else %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for item in news %}
+                    <article class="flex flex-col bg-white rounded-lg shadow overflow-hidden">
+
+                        {% if item.cover %}
+                            {% set cover = sulu_resolve_media(item.cover.id, app.request.locale) %}
+                            <a href="{{ sulu_content_path(item.route) }}" tabindex="-1" aria-hidden="true">
+                                <img
+                                    src="{{ cover.thumbnails['large'] }}"
+                                    alt="{{ cover.title }}"
+                                    class="w-full h-48 object-cover"
+                                >
+                            </a>
+                        {% endif %}
+
+                        <div class="flex flex-col flex-1 p-6">
+                            {% if item.category is defined and item.category %}
+                                <span class="text-xs font-semibold uppercase tracking-wide text-indigo-600 mb-2">
+                                    {{- item.category.defaultTranslation.translation|default('') -}}
+                                </span>
+                            {% endif %}
+
+                            <h2 class="text-lg font-semibold text-gray-900 mb-3">
+                                <a href="{{ sulu_content_path(item.route) }}" class="hover:underline">
+                                    {{ item.title }}
+                                </a>
+                            </h2>
+
+                            {% if item.publishedAt %}
+                                <time
+                                    datetime="{{ item.publishedAt|date('Y-m-d') }}"
+                                    class="mt-auto text-sm text-gray-400"
+                                >
+                                    {{ item.publishedAt|date('d/m/Y') }}
+                                </time>
+                            {% endif %}
+                        </div>
+
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% if pagination.totalPages > 1 %}
+                {%- set base_url = app.request.pathinfo -%}
+                {%- set cat_param = currentCategories is not empty ? '&category=' ~ currentCategories|join(',') : '' -%}
+
+                <nav class="mt-12 flex items-center justify-center gap-2" aria-label="{{ 'news.pagination'|trans }}">
+
+                    {% if pagination.hasPreviousPage %}
+                        <a
+                            href="{{ base_url }}?page={{ pagination.page - 1 }}{{ cat_param }}"
+                            class="px-4 py-2 rounded border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+                            rel="prev"
+                        >
+                            &larr; {{ 'news.pagination.prev'|trans }}
+                        </a>
+                    {% endif %}
+
+                    {% for p in 1..pagination.totalPages %}
+                        {% if p == pagination.page %}
+                            <span class="px-4 py-2 rounded border border-indigo-600 bg-indigo-600 text-sm text-white font-semibold">
+                                {{ p }}
+                            </span>
+                        {% elseif p == 1 or p == pagination.totalPages or (p >= pagination.page - 2 and p <= pagination.page + 2) %}
+                            <a
+                                href="{{ base_url }}?page={{ p }}{{ cat_param }}"
+                                class="px-4 py-2 rounded border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+                            >
+                                {{ p }}
+                            </a>
+                        {% elseif p == pagination.page - 3 or p == pagination.page + 3 %}
+                            <span class="px-2 text-gray-400">&hellip;</span>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if pagination.hasNextPage %}
+                        <a
+                            href="{{ base_url }}?page={{ pagination.page + 1 }}{{ cat_param }}"
+                            class="px-4 py-2 rounded border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+                            rel="next"
+                        >
+                            {{ 'news.pagination.next'|trans }} &rarr;
+                        </a>
+                    {% endif %}
+
+                </nav>
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+{% endblock %}

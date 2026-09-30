@@ -23,7 +23,7 @@ class NewsReferenceProvider
             News::RESOURCE_KEY,
             (string) $news->getId(),
             $locale,
-            $news->getTitle() ?? '',
+            mb_substr($news->getTitle() ?? '', 0, 191),
             $context,
             ['id' => $news->getId(), 'locale' => $locale],
         );

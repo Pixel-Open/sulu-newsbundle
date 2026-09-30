@@ -27,7 +27,6 @@ use Sulu\Bundle\TrashBundle\Application\TrashManager\TrashManagerInterface;
 use Sulu\Component\Rest\AbstractRestController;
 use Sulu\Component\Rest\Exception\EntityNotFoundException;
 use Sulu\Component\Rest\Exception\RestException;
-use Sulu\Component\Rest\RequestParametersTrait;
 use Sulu\Component\Security\SecuredControllerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,8 +43,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class NewsController extends AbstractRestController implements ClassResourceInterface, SecuredControllerInterface
 {
-    use RequestParametersTrait;
-
     private DoctrineListRepresentationFactory $doctrineListRepresentationFactory;
 
     private EntityManagerInterface $entityManager;
@@ -257,8 +254,8 @@ class NewsController extends AbstractRestController implements ClassResourceInte
      */
     public function postTriggerAction(int $id, Request $request): Response
     {
-        $action = $this->getRequestParameter($request, 'action', true);
-        $locale = $this->getRequestParameter($request, 'locale', true);
+        $action = $request->query->get('action');
+        $locale = $request->query->get('locale');
 
         try {
             switch ($action) {

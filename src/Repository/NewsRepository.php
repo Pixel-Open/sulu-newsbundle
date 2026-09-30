@@ -122,6 +122,9 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
 
         $query = $this->createQueryBuilder('n')
             ->leftJoin('n.translations', 'translation')
+            ->leftJoin('n.cover', 'cover')
+            ->leftJoin('n.category', 'category')
+            ->addSelect('cover', 'category')
             ->where('translation.isPublished = 1')
             ->andWhere('translation.locale = :locale')->setParameter('locale', $locale)
             ->orderBy('translation.publishedAt', 'DESC')
@@ -129,41 +132,33 @@ class NewsRepository extends EntityRepository implements DataProviderRepositoryI
             ->setFirstResult($pageCurrent * $limit);
 
         if (!empty($filters['categories'])) {
-            $i = 0;
-            if ($filters['categoryOperator'] === "and") {
-                $andWhere = "";
-                foreach ($filters['categories'] as $category) {
-                    if ($i === 0) {
-                        $andWhere .= "n.category = :category" . $i;
-                    } else {
-                        $andWhere .= " AND n.category = :category" . $i;
-                    }
-                    $query->setParameter("category" . $i, $category);
-                    $i++;
-                }
-                $query->andWhere($andWhere);
-            } elseif ($filters['categoryOperator'] === "or") {
-                $orWhere = "";
-                foreach ($filters['categories'] as $category) {
-                    if ($i === 0) {
-                        $orWhere .= "n.category = :category" . $i;
-                    } else {
-                        $orWhere .= " OR n.category = :category" . $i;
-                    }
-                    $query->setParameter("category" . $i, $category);
-                    $i++;
-                }
-                $query->andWhere($orWhere);
-            }
+            $query
+                ->andWhere('n.category IN (:categories)')
+                ->setParameter('categories', $filters['categories']);
         }
+
         if (isset($filters['sortBy'])) {
             $query->orderBy($filters['sortBy'], $filters['sortMethod']);
         }
-        $news = $query->getQuery()->getResult();
-        if (!$news) {
-            return [];
+
+        return $query->getQuery()->getResult() ?: [];
+    }
+
+    public function countPublished(string $locale, array $categoryIds = []): int
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->select('COUNT(DISTINCT n.id)')
+            ->leftJoin('n.translations', 'translation')
+            ->where('translation.isPublished = 1')
+            ->andWhere('translation.locale = :locale')
+            ->setParameter('locale', $locale);
+
+        if (!empty($categoryIds)) {
+            $qb->andWhere('n.category IN (:categories)')
+               ->setParameter('categories', $categoryIds);
         }
-        return $news;
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     protected function appendSortByJoins(QueryBuilder $queryBuilder, string $alias, string $locale): void

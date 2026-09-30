@@ -3,3 +3,7 @@ news.unpublish: Unpublish
 news.publish: Publish
 news: News
 news.emptyNews: Select a news item
+news.no_results: No news available.
+news.pagination: Pagination
+news.pagination.prev: Previous
+news.pagination.next: Next

@@ -3,3 +3,7 @@ news.unpublish: Dépublier
 news.publish: Publier
 news: Actus
 news.emptyNews: Sélectionner une actu
+news.no_results: Aucune actualité disponible.
+news.pagination: Pagination
+news.pagination.prev: Précédent
+news.pagination.next: Suivant

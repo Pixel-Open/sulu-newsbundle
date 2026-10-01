@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.1 (01/10/2026)
+
+- Fix TreeBuilder for configuration for Symfony 7.4
+
 ## 2.8.0 (30/09/2026)
 
 + Add paginated news list website controller and template
